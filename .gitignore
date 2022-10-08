@@ -1,0 +1,10 @@
+# Eclipse
+*.class
+.classpath
+.project
+.settings
+.metadata
+
+# Squealy
+target
+bin
