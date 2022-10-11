@@ -8,15 +8,15 @@ import java.util.Set;
 
 public class ConfigurationSection {
 
-	private volatile FileConfiguration root;
+	protected volatile FileConfiguration root;
 
-	private String cpath = "";
+	protected String cpath = "";
 
 	public ConfigurationSection(FileConfiguration config) {
 		this.root = config;
 	}
 
-	ConfigurationSection(FileConfiguration config, String path) {
+	protected ConfigurationSection(FileConfiguration config, String path) {
 		this.root = config;
 		this.cpath = path;
 	}
