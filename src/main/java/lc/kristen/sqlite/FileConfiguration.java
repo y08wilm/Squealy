@@ -48,7 +48,7 @@ public class FileConfiguration {
 			this.openFile();
 		}
 		try {
-			tableName = tableName.replace(".", "_");
+			tableName = tableName.replace(".", "_").replace("-", "");
 			String arg0 = "SELECT VALUE " + "FROM '" + tableName + "';";
 			if (debug) {
 				System.out.println(arg0);
@@ -76,7 +76,7 @@ public class FileConfiguration {
 			this.openFile();
 		}
 		try {
-			tableName = tableName.replace(".", "_");
+			tableName = tableName.replace(".", "_").replace("-", "");
 			String arg0 = "DROP TABLE IF EXISTS " + tableName + ";";
 			if (debug) {
 				System.out.println(arg0);
@@ -98,7 +98,7 @@ public class FileConfiguration {
 			this.openFile();
 		}
 		try {
-			tableName = tableName.replace(".", "_");
+			tableName = tableName.replace(".", "_").replace("-", "");
 			if (type == int.class || type == Integer.class) {
 				String arg0 = "CREATE TABLE IF NOT EXISTS " + tableName
 						+ "(ID INT PRIMARY KEY, VALUE INT);";
@@ -150,7 +150,7 @@ public class FileConfiguration {
 			this.openFile();
 		}
 		try {
-			tableName = tableName.replace(".", "_");
+			tableName = tableName.replace(".", "_").replace("-", "");
 			createTable(tableName, value.getClass());
 			if (safeMode == true) {
 				this.openFile();
@@ -186,7 +186,7 @@ public class FileConfiguration {
 			this.openFile();
 		}
 		try {
-			tableName = tableName.replace(".", "_");
+			tableName = tableName.replace(".", "_").replace("-", "");
 			createTable(tableName, value.getClass());
 			if (safeMode == true) {
 				this.openFile();
@@ -222,7 +222,7 @@ public class FileConfiguration {
 			this.openFile();
 		}
 		try {
-			tableName = tableName.replace(".", "_");
+			tableName = tableName.replace(".", "_").replace("-", "");
 			String arg0 = "SELECT * FROM " + tableName + ";";
 			if (debug) {
 				System.out.println(arg0);
@@ -254,7 +254,7 @@ public class FileConfiguration {
 			this.openFile();
 		}
 		try {
-			tableName = tableName.replace(".", "_");
+			tableName = tableName.replace(".", "_").replace("-", "");
 			String arg0 = "SELECT * FROM " + tableName + ";";
 			if (debug) {
 				System.out.println(arg0);
@@ -286,7 +286,7 @@ public class FileConfiguration {
 			this.openFile();
 		}
 		try {
-			tableName = tableName.replace(".", "_");
+			tableName = tableName.replace(".", "_").replace("-", "");
 			String arg0 = "SELECT * FROM " + tableName + ";";
 			if (debug) {
 				System.out.println(arg0);
@@ -318,7 +318,7 @@ public class FileConfiguration {
 			this.openFile();
 		}
 		try {
-			tableName = tableName.replace(".", "_");
+			tableName = tableName.replace(".", "_").replace("-", "");
 			String arg0 = "SELECT * FROM " + tableName + ";";
 			if (debug) {
 				System.out.println(arg0);
