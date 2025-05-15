@@ -205,6 +205,45 @@ public class FileConfiguration {
 		}
 	}
 
+	void insert(String tableName, String key, Object value) throws SQLException {
+		if (safeMode == true || con == null) {
+			this.openFile();
+		}
+		try {
+			tableName = tableName.replace(".", "_").replace("-", "");
+			createTable(tableName, value.getClass());
+			if (safeMode == true) {
+				this.openFile();
+			}
+			if (value instanceof String) {
+				String arg0 = "INSERT INTO " + tableName + " (ID, " + key
+						+ ") VALUES (0, '" + value + "');";
+				if (debug) {
+					System.out.println(arg0);
+				}
+				stmt.executeUpdate(arg0);
+			} else {
+				String arg0 = "INSERT INTO " + tableName + " (ID, " + key
+						+ ") VALUES (0, " + value + ");";
+				if (debug) {
+					System.out.println(arg0);
+				}
+				stmt.executeUpdate(arg0);
+			}
+			if (!section.contains(tableName)) {
+				section.set(tableName, toHex(value + ""));
+			}
+			if (safeMode == true) {
+				this.close();
+			}
+		} catch (SQLException e) {
+			if (safeMode == true) {
+				this.close();
+			}
+			throw e;
+		}
+	}
+
 	int selectIntBy(String tableName, String key, int def) throws SQLException {
 		if (safeMode == true || con == null) {
 			this.openFile();
