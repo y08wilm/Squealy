@@ -3,11 +3,16 @@ package lc.kristen.sqlite;
 import static lc.kristen.sqlite.runnable.HealthMonitor.lockedSqlDatabaseFiles;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+
+import javax.xml.bind.DatatypeConverter;
+
+import org.bukkit.configuration.MemoryConfiguration;
 
 public class FileConfiguration {
 
@@ -15,6 +20,7 @@ public class FileConfiguration {
 	public boolean debug = false;
 	public boolean safeMode = false;
 
+	MemoryConfiguration section;
 	Connection con;
 	Statement stmt;
 
@@ -27,6 +33,16 @@ public class FileConfiguration {
 		}
 	}
 
+	public String fromHex(String arg) {
+		return new String(DatatypeConverter.parseHexBinary(arg),
+				StandardCharsets.UTF_8);
+	}
+
+	public String toHex(String arg) {
+		return DatatypeConverter.printHexBinary(arg
+				.getBytes(StandardCharsets.UTF_8));
+	}
+
 	void openFile() throws SQLException {
 		String fn = "jdbc:sqlite:" + fileName;
 		if (lockedSqlDatabaseFiles.contains(fn) == true) {
@@ -35,6 +51,7 @@ public class FileConfiguration {
 		if (debug) {
 			System.out.println(fn);
 		}
+		section = new MemoryConfiguration();
 		con = DriverManager.getConnection(fn);
 		con.setAutoCommit(true);
 		stmt = con.createStatement();
@@ -49,6 +66,9 @@ public class FileConfiguration {
 		}
 		try {
 			tableName = tableName.replace(".", "_").replace("-", "");
+			if (section.contains(tableName)) {
+				return true;
+			}
 			String arg0 = "SELECT VALUE " + "FROM '" + tableName + "';";
 			if (debug) {
 				System.out.println(arg0);
@@ -77,6 +97,9 @@ public class FileConfiguration {
 		}
 		try {
 			tableName = tableName.replace(".", "_").replace("-", "");
+			if (section.contains(tableName)) {
+				section.set(tableName, null);
+			}
 			String arg0 = "DROP TABLE IF EXISTS " + tableName + ";";
 			if (debug) {
 				System.out.println(arg0);
@@ -170,42 +193,7 @@ public class FileConfiguration {
 				}
 				stmt.executeUpdate(arg0);
 			}
-			if (safeMode == true) {
-				this.close();
-			}
-		} catch (SQLException e) {
-			if (safeMode == true) {
-				this.close();
-			}
-			throw e;
-		}
-	}
-
-	void insert(String tableName, String key, Object value) throws SQLException {
-		if (safeMode == true || con == null) {
-			this.openFile();
-		}
-		try {
-			tableName = tableName.replace(".", "_").replace("-", "");
-			createTable(tableName, value.getClass());
-			if (safeMode == true) {
-				this.openFile();
-			}
-			if (value instanceof String) {
-				String arg0 = "INSERT INTO " + tableName + " (ID, " + key
-						+ ") VALUES (0, '" + value + "');";
-				if (debug) {
-					System.out.println(arg0);
-				}
-				stmt.executeUpdate(arg0);
-			} else {
-				String arg0 = "INSERT INTO " + tableName + " (ID, " + key
-						+ ") VALUES (0, " + value + ");";
-				if (debug) {
-					System.out.println(arg0);
-				}
-				stmt.executeUpdate(arg0);
-			}
+			section.set(tableName, toHex(value + ""));
 			if (safeMode == true) {
 				this.close();
 			}
@@ -223,6 +211,9 @@ public class FileConfiguration {
 		}
 		try {
 			tableName = tableName.replace(".", "_").replace("-", "");
+			if (section.contains(tableName)) {
+				return Integer.valueOf(fromHex(section.getString(tableName)));
+			}
 			String arg0 = "SELECT * FROM " + tableName + ";";
 			if (debug) {
 				System.out.println(arg0);
@@ -255,6 +246,9 @@ public class FileConfiguration {
 		}
 		try {
 			tableName = tableName.replace(".", "_").replace("-", "");
+			if (section.contains(tableName)) {
+				return Double.valueOf(fromHex(section.getString(tableName)));
+			}
 			String arg0 = "SELECT * FROM " + tableName + ";";
 			if (debug) {
 				System.out.println(arg0);
@@ -287,6 +281,9 @@ public class FileConfiguration {
 		}
 		try {
 			tableName = tableName.replace(".", "_").replace("-", "");
+			if (section.contains(tableName)) {
+				return Long.valueOf(fromHex(section.getString(tableName)));
+			}
 			String arg0 = "SELECT * FROM " + tableName + ";";
 			if (debug) {
 				System.out.println(arg0);
@@ -319,6 +316,9 @@ public class FileConfiguration {
 		}
 		try {
 			tableName = tableName.replace(".", "_").replace("-", "");
+			if (section.contains(tableName)) {
+				return String.valueOf(fromHex(section.getString(tableName)));
+			}
 			String arg0 = "SELECT * FROM " + tableName + ";";
 			if (debug) {
 				System.out.println(arg0);
@@ -367,6 +367,7 @@ public class FileConfiguration {
 		}
 		stmt = null;
 		con = null;
+		section = null;
 		if (lockedSqlDatabaseFiles.contains(fn) == true) {
 			lockedSqlDatabaseFiles.remove(fn);
 		}

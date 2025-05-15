@@ -64,5 +64,10 @@
 			<artifactId>sqlite-jdbc</artifactId>
 			<version>3.49.1.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>1.8.8-R0.1-SNAPSHOT</version>
+		</dependency>
     </dependencies>
 </project>

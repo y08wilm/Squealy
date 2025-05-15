@@ -88,22 +88,6 @@ public class ConfigurationSection {
 		return null;
 	}
 
-	public void set(String path, Object value) throws SQLException {
-		if (cpath.length() > 0)
-			path = cpath + "_" + path;
-		if (value == null) {
-			root.dropTable(path);
-		} else {
-			if (value instanceof Boolean) {
-				if ((boolean) value == true) {
-					value = 1;
-				} else if ((boolean) value == false)
-					value = 0;
-			}
-			root.insert(path, "value", value);
-		}
-	}
-
 	public void replace(String path, Object value) throws SQLException {
 		if (cpath.length() > 0)
 			path = cpath + "_" + path;
